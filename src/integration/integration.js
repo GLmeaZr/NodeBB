@@ -18,7 +18,7 @@ var unsignCookie = function (val, secrets) {
 	}
 
 	return false;
-}
+};
 
 module.exports = {
 	checkSessionFromApp: function (request, cb) {
@@ -37,7 +37,7 @@ module.exports = {
 									if (err) {
 										cb(null);
 									} else if (user) {
-										request.login({uid: uid}, function () {
+										request.login({ uid: uid }, function () {
 											cb(user);
 										});
 									} else {
@@ -51,8 +51,8 @@ module.exports = {
 									} else {
 										var dbo = dboi.db(process.env.DB);
 										dbo.collection(process.env.COLLECTION)
-											.findOne({_id: new (require('mongodb')).ObjectID(JSON.parse(reply).passport.user)},
-												{email: 1, username: 1}, function (err, user) {
+											.findOne({ _id: new (require('mongodb')).ObjectID(JSON.parse(reply).passport.user) },
+												{ email: 1, username: 1 }, function (err, user) {
 													if (err) {
 														cb(null);
 													} else if (user) {
@@ -73,7 +73,7 @@ module.exports = {
 														console.log('NOT FOUND');
 														cb(null);
 													}
-													db.close();
+													dboi.close();
 												});
 									}
 								});
