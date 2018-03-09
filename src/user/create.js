@@ -44,6 +44,7 @@ module.exports = function (User) {
 					lastposttime: 0,
 					banned: 0,
 					status: 'online',
+					uid: data.uid,
 				};
 
 				User.uniqueUsername(userData, next);
@@ -62,8 +63,8 @@ module.exports = function (User) {
 				db.incrObjectField('global', 'nextUid', next);
 			},
 			function (uid, next) {
-				userData.uid = uid;
-				db.setObject('user:' + uid, userData, next);
+				// userData.uid = uid;
+				db.setObject('user:' + userData.uid, userData, next);
 			},
 			function (next) {
 				async.parallel([
