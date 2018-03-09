@@ -5,6 +5,7 @@ var redis = require('redis');
 var client = redis.createClient();
 var signature = require('cookie-signature');
 var User = require('../user');
+var authenticationController = require('../controllers/authentication');
 var MongoClient = require('mongodb').MongoClient;
 var url = process.env.DATABASE;
 
@@ -38,7 +39,9 @@ module.exports = {
 										cb(null);
 									} else if (user) {
 										request.login({ uid: uid }, function () {
-											cb(user);
+											authenticationController.onSuccessfulLogin(request, uid, function() {
+												cb(user);
+											});
 										});
 									} else {
 										cb(null);
