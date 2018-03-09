@@ -63,7 +63,9 @@ module.exports = function (User) {
 				db.incrObjectField('global', 'nextUid', next);
 			},
 			function (uid, next) {
-				// userData.uid = uid;
+				if (!data.uid) {
+					userData.uid = uid;
+				}
 				db.setObject('user:' + userData.uid, userData, next);
 			},
 			function (next) {
@@ -197,6 +199,7 @@ module.exports = function (User) {
 
 	User.uniqueUsername = function (userData, callback) {
 		var numTries = 0;
+
 		function go(username) {
 			async.waterfall([
 				function (next) {
