@@ -12,8 +12,6 @@ var user = require('../user');
 var logger = require('../logger');
 var ratelimit = require('../middleware/ratelimit');
 
-var integration = require('../integration/integration');
-
 var Namespaces = {};
 var io;
 
@@ -96,8 +94,7 @@ function onMessage(socket, payload) {
 
 	var eventName = payload.data[0];
 	var params = payload.data[1];
-	var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {
-	};
+	var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {};
 
 	if (!eventName) {
 		return winston.warn('[socket.io] Empty method name');
@@ -200,19 +197,19 @@ function authorize(socket, callback) {
 			cookieParser(request, {}, next);
 		},
 		function (next) {
-			integration.getSessionData(request, function (sessionData) {
-				console.log(sessionData);
-				if (!sessionData) {
-					next('ERROR');
-				} else if (sessionData && sessionData.passport && sessionData.passport.user) {
+			db.sessionStore.get(request.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
+				if (err) {
+					return next(err);
+				}
+				if (sessionData && sessionData.passport && sessionData.passport.user) {
 					request.session = sessionData;
 					socket.uid = parseInt(sessionData.passport.user, 10);
-					next();
 				} else {
 					socket.uid = 0;
-					next();
 				}
+				next();
 			});
+
 		},
 	], callback);
 }

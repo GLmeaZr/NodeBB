@@ -5,10 +5,8 @@ var redis = require('redis');
 var client = redis.createClient();
 var signature = require('cookie-signature');
 var User = require('../user');
-
 var MongoClient = require('mongodb').MongoClient;
 var url = process.env.DATABASE;
-
 
 var unsignCookie = function (val, secrets) {
 	for (var i = 0; i < secrets.length; i++) {
@@ -39,17 +37,19 @@ module.exports = {
 									if (err) {
 										cb(null);
 									} else if (user) {
-										cb(user);
+										request.login({uid: uid}, function () {
+											cb(user);
+										});
 									} else {
 										cb(null);
 									}
 								});
 							} else {
-								MongoClient.connect(url, function (err, db) {
+								MongoClient.connect(url, function (err, dboi) {
 									if (err) {
 										cb(null);
 									} else {
-										var dbo = db.db(process.env.DB);
+										var dbo = dboi.db(process.env.DB);
 										dbo.collection(process.env.COLLECTION)
 											.findOne({_id: new (require('mongodb')).ObjectID(JSON.parse(reply).passport.user)},
 												{email: 1, username: 1}, function (err, user) {
@@ -81,20 +81,6 @@ module.exports = {
 						});
 					} else {
 						cb(null);
-					}
-				});
-		} else {
-			cb(null);
-		}
-	},
-	getSessionData: function (request, cb) {
-		if (request.cookies['connect.sid']) {
-			client.get('sess:' + unsignCookie(request.cookies['connect.sid'].slice(2), ['db7bb930f08ce2365191466ba0f266ce']),
-				function (err, reply) {
-					if (err) {
-						cb(null);
-					} else {
-						cb(JSON.parse(reply));
 					}
 				});
 		} else {
