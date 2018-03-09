@@ -45,12 +45,11 @@ module.exports = {
 									}
 								});
 							} else {
-								MongoClient.connect(url, function (err, dboi) {
+								MongoClient.connect(url, function (err, db) {
 									if (err) {
 										cb(null);
 									} else {
-										var dbo = dboi.db(process.env.DB);
-										dbo.collection(process.env.COLLECTION)
+										db.collection(process.env.COLLECTION)
 											.findOne({ _id: new (require('mongodb')).ObjectID(JSON.parse(reply).passport.user) },
 												{ email: 1, username: 1 }, function (err, user) {
 													if (err) {
@@ -73,7 +72,7 @@ module.exports = {
 														console.log('NOT FOUND');
 														cb(null);
 													}
-													dboi.close();
+													db.close();
 												});
 									}
 								});
