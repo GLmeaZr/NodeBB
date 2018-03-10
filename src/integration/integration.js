@@ -38,7 +38,6 @@ module.exports = {
 									if (err) {
 										cb(null);
 									} else if (user) {
-										request.cookies['express.sid'] = request.cookies['connect.sid'];
 										request.login({ uid: uid }, function () {
 											authenticationController.onSuccessfulLogin(request, uid, function() {
 												cb(user);
