@@ -197,11 +197,10 @@ function authorize(socket, callback) {
 			cookieParser(request, {}, next);
 		},
 		function (next) {
-			db.sessionStore.get(request.signedCookies[nconf.get('sessionKey')] || request.signedCookies['connect.sid'], function (err, sessionData) {
+			db.sessionStore.get(request.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
 				if (err) {
 					return next(err);
 				}
-				console.log(sessionData);
 				if (sessionData && sessionData.passport && sessionData.passport.user) {
 					request.session = sessionData;
 					socket.uid = parseInt(sessionData.passport.user, 10);
