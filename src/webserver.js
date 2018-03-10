@@ -170,8 +170,8 @@ function setupExpressApp(app, callback) {
 		secret: nconf.get('secret'),
 		key: nconf.get('sessionKey'),
 		cookie: setupCookie(),
-		resave: true,
-		saveUninitialized: true,
+		resave: false,
+		saveUninitialized: false,
 	}));
 
 	app.use(helmet());
