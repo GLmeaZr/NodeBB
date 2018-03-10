@@ -22,22 +22,16 @@ Auth.initialize = function (app, middleware) {
 	app.use(passport.session());
 
 	app.use(function (req, res, next) {
-		req.session.views = 1;
 		var isSpider = req.isSpider();
-		integration.checkSessionFromApp(req, function (result) {
-			if (result) {
-				req.user = result;
-			}
-			req.loggedIn = !isSpider && !!req.user;
-			if (isSpider) {
-				req.uid = -1;
-			} else if (req.user) {
-				req.uid = parseInt(req.user.uid, 10);
-			} else {
-				req.uid = 0;
-			}
-			next();
-		});
+		req.loggedIn = !isSpider && !!req.user;
+		if (isSpider) {
+			req.uid = -1;
+		} else if (req.user) {
+			req.uid = parseInt(req.user.uid, 10);
+		} else {
+			req.uid = 0;
+		}
+		next();
 	});
 
 	Auth.app = app;
