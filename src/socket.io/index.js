@@ -201,6 +201,7 @@ function authorize(socket, callback) {
 				if (err) {
 					return next(err);
 				}
+				console.log(sessionData);
 				if (sessionData && sessionData.passport && sessionData.passport.user) {
 					request.session = sessionData;
 					socket.uid = parseInt(sessionData.passport.user, 10);
