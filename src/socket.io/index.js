@@ -197,6 +197,7 @@ function authorize(socket, callback) {
 			cookieParser(request, {}, next);
 		},
 		function (next) {
+		console.log(request.signedCookies);
 			db.sessionStore.get(request.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
 				if (err) {
 					return next(err);
