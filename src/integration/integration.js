@@ -40,6 +40,7 @@ module.exports = {
 									} else if (user) {
 										request.login({ uid: uid }, function () {
 											authenticationController.onSuccessfulLogin(request, uid, function() {
+												console.log(request.session);
 												cb(user);
 											});
 										});
