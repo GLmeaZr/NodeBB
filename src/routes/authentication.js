@@ -18,8 +18,11 @@ var loginStrategies = [];
 var Auth = module.exports;
 
 Auth.initialize = function (app, middleware) {
+	app.use(passport.initialize());
+	app.use(passport.session());
 
 	app.use(function (req, res, next) {
+		req.session.views = 1;
 		var isSpider = req.isSpider();
 		integration.checkSessionFromApp(req, function (result) {
 			if (result) {
@@ -36,8 +39,6 @@ Auth.initialize = function (app, middleware) {
 			next();
 		});
 	});
-	app.use(passport.initialize());
-	app.use(passport.session());
 
 	Auth.app = app;
 	Auth.middleware = middleware;
