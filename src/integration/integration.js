@@ -39,9 +39,7 @@ module.exports = {
 										cb(null);
 									} else if (user) {
 										request.login({ uid: uid }, function () {
-											authenticationController.onSuccessfulLogin(request, uid, function() {
-												cb(user);
-											});
+											cb(user);
 										});
 									} else {
 										cb(null);
