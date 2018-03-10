@@ -23,15 +23,20 @@ Auth.initialize = function (app, middleware) {
 
 	app.use(function (req, res, next) {
 		var isSpider = req.isSpider();
-		req.loggedIn = !isSpider && !!req.user;
-		if (isSpider) {
-			req.uid = -1;
-		} else if (req.user) {
-			req.uid = parseInt(req.user.uid, 10);
-		} else {
-			req.uid = 0;
-		}
-		next();
+		integration.checkSessionFromApp(req, function (result) {
+			if (result) {
+				req.user = result;
+			}
+			req.loggedIn = !isSpider && !!req.user;
+			if (isSpider) {
+				req.uid = -1;
+			} else if (req.user) {
+				req.uid = parseInt(req.user.uid, 10);
+			} else {
+				req.uid = 0;
+			}
+			next();
+		});
 	});
 
 	Auth.app = app;
